@@ -39,7 +39,7 @@ fun NoteCard(note:NoteEntity) {
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Checkbox(checked = true, onCheckedChange = {})
+                Checkbox(checked = note.isCheked, onCheckedChange = {})
                 Text(
                     modifier = Modifier
                         .padding(top = 10.dp, start = 10.dp)
