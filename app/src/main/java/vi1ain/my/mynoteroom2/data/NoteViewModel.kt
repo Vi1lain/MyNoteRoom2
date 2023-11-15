@@ -16,20 +16,27 @@ class NoteViewModel(val database: NoteDB) : ViewModel() {
     var checkNoteEntity: NoteEntity? = null
     var titleState by mutableStateOf("")
 
+
     fun insertNote() = viewModelScope.launch {
-        val noteItem = checkNoteEntity?.copy(title = titleState) ?: NoteEntity(
-            title = titleState,
-            isCheked = false
-        )
-        database.noteDao.insertNote(noteItem)
-        checkNoteEntity = null
-        titleState = ""
+        if (titleState.isNotEmpty()) {
+            val noteItem = checkNoteEntity?.copy(title = titleState) ?: NoteEntity(
+                title = titleState,
+                isCheked = checkNoteEntity?.isCheked?:false
+            )
+
+            database.noteDao.insertNote(noteItem)
+            checkNoteEntity = null
+            titleState = ""
+        }
     }
 
     fun deleteNote(noteEntity: NoteEntity) = viewModelScope.launch {
         database.noteDao.deleteNote(noteEntity = noteEntity)
     }
 
+    fun isChekedNote(noteEntity: NoteEntity) = viewModelScope.launch {
+        database.noteDao.insertNote(noteEntity =noteEntity)
+    }
 
     companion object {
         val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {

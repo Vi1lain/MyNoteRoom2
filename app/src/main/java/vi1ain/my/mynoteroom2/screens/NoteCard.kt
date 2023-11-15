@@ -22,24 +22,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vi1ain.my.mynoteroom2.data.NoteEntity
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun NoteCard(note:NoteEntity) {
-    Scaffold() {
+fun NoteCard(note:NoteEntity,
+             addClick:(NoteEntity)->Unit,
+             deleteClick:(NoteEntity)->Unit,
+             isChekNote:(Boolean)->Unit
+             )
+{
+
         Card(modifier = Modifier
             .fillMaxWidth()
             .padding(
                 start = 3.dp, top = 3.dp, end = 3.dp
             )
             .clickable {
-                /*TODO*/
+                addClick(note)
             }) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Checkbox(checked = note.isCheked, onCheckedChange = {})
+                Checkbox(checked = note.isCheked, onCheckedChange = {check ->
+                    isChekNote(check)
+                })
                 Text(
                     modifier = Modifier
                         .padding(top = 10.dp, start = 10.dp)
@@ -49,11 +55,13 @@ fun NoteCard(note:NoteEntity) {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    deleteClick(note)
+                }) {
                     Icon(Icons.Default.Delete, contentDescription = "delete",tint = Color.Red)
 
                 }
             }
         }
-    }
+
 }

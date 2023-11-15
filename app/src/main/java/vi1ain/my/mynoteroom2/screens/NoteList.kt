@@ -33,11 +33,13 @@ fun NoteList(
     noteViewModel: NoteViewModel = viewModel(factory = NoteViewModel.factory)
 ) {
 
-val noteList = noteViewModel.noteList.collectAsState(initial = emptyList())
+    val noteList = noteViewModel.noteList.collectAsState(initial = emptyList())
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = { /*TODO*/ }) {
+            ExtendedFloatingActionButton(onClick = {
+                noteViewModel.insertNote()
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.add_icon),
                     contentDescription = "add"
@@ -49,7 +51,6 @@ val noteList = noteViewModel.noteList.collectAsState(initial = emptyList())
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(bottom = 50.dp)
         ) {
             TextField(colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -59,11 +60,25 @@ val noteList = noteViewModel.noteList.collectAsState(initial = emptyList())
                 label = { Text(text = "title") },
                 modifier = Modifier.fillMaxWidth(),
                 value = noteViewModel.titleState,
-                onValueChange = {text -> noteViewModel.titleState = text})
+                onValueChange = { text -> noteViewModel.titleState = text })
 
-            LazyColumn(
+            LazyColumn(modifier = Modifier
+                .fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 80.dp),
-                content = { items(noteList.value) { note -> NoteCard(note) } })
+                 ){
+                items(noteList.value) { note ->
+                    NoteCard(note,
+                        {
+                            noteViewModel.checkNoteEntity = it
+                            noteViewModel.titleState = it.title
+                        },
+                        {
+                            noteViewModel.deleteNote(note)
+                        },{check ->
+                            noteViewModel.isChekedNote(note.copy(isCheked = check))
+                        })
+                }
+            }
         }
     }
 }
